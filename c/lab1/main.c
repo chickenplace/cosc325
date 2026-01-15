@@ -9,7 +9,7 @@
 
 /* ===== Part 2 ===== */
 int sum_to(int n) {
-    // TODO: implement using a for loop and mutable local state
+    // TODO: implement using a for loop and mutable local state ,jake.extrawords
     return 0;
 }
 
