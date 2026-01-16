@@ -22,9 +22,9 @@ int sum_to(int n) {
 
 /* ===== Part 3 ===== */
 double avg_1_to_n(int n) {
-    // TODO: call sum_to(n)
-    // HINT: cast to double to avoid integer division
-    return 0.0;
+    int sum = sum_to(n);
+    double avg = (double)sum / n;
+    return avg;
 }
 
 /* ===== Part 4 ===== */
