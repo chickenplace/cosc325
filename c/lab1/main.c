@@ -39,9 +39,15 @@ int main() {
     int x = 2;
     x = x + 3;
     x = x * 4;
-    printf("x=%d\n", x);
+    printf("x=%d\n", x); //x = 20 for this case
+    //Reflection 1.1: The value of x changed over time because it was reassigned multiple times.
+    //The intermediate values of x were in the location in memory allocated to x.
 
     // TODO: swap the last two assignments above and re-run
+    x = 2;
+    x = x * 4;
+    x = x + 3;
+    printf("x=%d\n", x); 
 
 
     /* ===== Part 2 ===== */
