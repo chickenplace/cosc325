@@ -13,11 +13,12 @@
 int sum_to(int n) {
     int i;
     int s = 0;
-    for(i = 1; i <= n; i++) {
-        s += i;
+    for(i = 1; i <= n; i++) { 
+        s += i; //Reflection 2.1: Line 17 is where control happens and where the state of the sum variable (represented by s) changes.
     }
     return s;
 }
+//Reflection 2.2: The function in C must define the loop structure as well as the return value.
 
 /* ===== Part 3 ===== */
 double avg_1_to_n(int n) {

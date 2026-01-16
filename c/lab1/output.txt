@@ -3,8 +3,8 @@ x=20
 x=11
 
 --- Part 2: Control Flow ---
-sum_to(5) = 0 (expected 15)
-sum_to(1) = 0 (expected 1)
+sum_to(5) = 15 (expected 15)
+sum_to(1) = 1 (expected 1)
 
 --- Part 3: Functions as Procedures ---
 avg_1_to_n(5) = 0.0 (expected 3.0)
