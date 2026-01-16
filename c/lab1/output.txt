@@ -7,7 +7,7 @@ sum_to(5) = 15 (expected 15)
 sum_to(1) = 1 (expected 1)
 
 --- Part 3: Functions as Procedures ---
-avg_1_to_n(5) = 0.0 (expected 3.0)
+avg_1_to_n(5) = 3.0 (expected 3.0)
 
 --- Part 4: Pass-by-Value vs Pointers ---
 after increment_bad: a=5 (expected 5)
