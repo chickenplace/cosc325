@@ -26,6 +26,7 @@ double avg_1_to_n(int n) {
     double avg = (double)sum / n;
     return avg;
 }
+//Reflection 3.1: C requires you to cast sum to a double to avoid integer division.
 
 /* ===== Part 4 ===== */
 void increment_bad(int x) {
@@ -33,7 +34,7 @@ void increment_bad(int x) {
 }
 
 void increment(int *x) {
-    // TODO: fix using a pointer
+    (*x)++;
 }
 
 int main() {
@@ -75,7 +76,7 @@ int main() {
     printf("after increment_bad: a=%d (expected 5)\n", a);
 
     increment(&a);
-    printf("after increment:     a=%d (expected 6)\n", a);
+    printf("after increment: a=%d (expected 6)\n", a);
 
     return 0;
 }
