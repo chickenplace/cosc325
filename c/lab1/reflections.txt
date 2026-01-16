@@ -1,0 +1,20 @@
+x = 20 for this case
+Reflection 1.1: The value of x changed over time because it was reassigned multiple times.
+The intermediate values of x were in the location in memory allocated to x.
+
+Reflection 1.2: The meaning changed, and the order of operations matters because it effects the final result.
+
+----
+Reflection 2.1: Line 17 is where control happens and where the state of the sum variable (represented by s) changes.
+
+Reflection 2.2: The function in C must define the loop structure as well as the return value.
+
+----
+Reflection 3.1: C requires you to cast sum to a double to avoid integer division.
+
+----
+Reflection 4.1: The increment_bad function does not work as intended since it uses pass-by-value
+meaning that it only modifies a copy of the variable passed in, not the original variable itself.
+
+Reflection 4.2: Using pointers allows the function to modify the state of the original variable
+and this allows for multiple function to access this variable through state sharing.
