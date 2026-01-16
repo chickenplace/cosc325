@@ -11,4 +11,4 @@ avg_1_to_n(5) = 3.0 (expected 3.0)
 
 --- Part 4: Pass-by-Value vs Pointers ---
 after increment_bad: a=5 (expected 5)
-after increment:     a=5 (expected 6)
+after increment: a=6 (expected 6)

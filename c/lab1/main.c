@@ -32,10 +32,14 @@ double avg_1_to_n(int n) {
 void increment_bad(int x) {
     x++;
 }
+//Reflection 4.1: The increment_bad function does not work as intended since it uses pass-by-value
+//meaning that it only modifies a copy of the variable passed in, not the original variable itself.
 
 void increment(int *x) {
     (*x)++;
 }
+//Reflection 4.2: Using pointers allows the function to modify the state of the original variable
+//and this allows for multiple function to access this variable through state sharing.
 
 int main() {
 
