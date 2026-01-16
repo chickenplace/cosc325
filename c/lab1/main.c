@@ -11,8 +11,12 @@
 
 /* ===== Part 2 ===== */
 int sum_to(int n) {
-    // TODO: implement using a for loop and mutable local state ,jake.extrawords
-    return 0;
+    int i;
+    int s = 0;
+    for(i = 1; i <= n; i++) {
+        s += i;
+    }
+    return s;
 }
 
 /* ===== Part 3 ===== */
@@ -43,11 +47,12 @@ int main() {
     //Reflection 1.1: The value of x changed over time because it was reassigned multiple times.
     //The intermediate values of x were in the location in memory allocated to x.
 
-    // TODO: swap the last two assignments above and re-run
+    
     x = 2;
     x = x * 4;
     x = x + 3;
     printf("x=%d\n", x); 
+    //Reflection 1.2: The meaning changed, and the order of operations matters because it effects the final result.
 
 
     /* ===== Part 2 ===== */
