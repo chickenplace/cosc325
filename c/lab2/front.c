@@ -2,6 +2,8 @@
              arithmetic expressions */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <ctype.h>
 
 /* Global declarations */
@@ -12,7 +14,7 @@ char  nextChar;
 int  lexLen;
 int  token;
 int  nextToken;
-FILE *in_fp, *fopen();
+FILE *in_fp;
 /* Function declarations */
 void  addChar();
 void  getChar();
@@ -22,18 +24,35 @@ int  lex();
 /* Character classes */
 #define LETTER 0
 #define DIGIT 1
+#define QUOTE 2
 #define UNKNOWN 99
 
 /* Token codes */
+#define STRING_LIT 8
 #define INT_LIT 10
+#define FLOAT_LIT 9
 #define IDENT 11
-#define ASSIGN_OP 20
+#define LT_OP 18
+#define GT_OP 19
+#define EQUALS_OP 20
 #define ADD_OP 21
 #define SUB_OP 22
 #define MULT_OP 23
 #define DIV_OP 24
 #define LEFT_PAREN 25
 #define RIGHT_PAREN 26
+#define PRINT 30
+#define INPUT 31
+#define IF 32
+#define THEN 33
+#define GOTO 34
+#define GOSUB 35
+#define LET 36
+#define RETURN 37
+#define CLEAR 38
+#define LIST 39
+#define RUN 40
+#define END 41
 /******************************************************/
 /* main driver */
 int main() {
@@ -43,7 +62,7 @@ int main() {
    else  {
      getChar();
      do   {
-       lex();
+       lex(); //lex calls getnonblank which calls getchar
     }  while (nextToken != EOF);
   }
 }
@@ -84,9 +103,26 @@ int  lookup(char  ch) {
       nextToken = DIV_OP;
       break;
 
+    case  '=':
+      addChar();
+      nextToken = EQUALS_OP;
+      break;   
+      
+    case  '<':
+      addChar();
+      nextToken = LT_OP;
+      break;
+
+    case  '>':
+      addChar();
+      nextToken = GT_OP;
+      break;
+
     default:
       addChar();
-      nextToken = EOF;
+      //nextToken = EOF;
+      printf("Error - unknown character: %c\n", nextChar);
+      exit(1);
       break;
   }
   return  nextToken;
@@ -116,6 +152,8 @@ void getChar() {
       charClass = LETTER;
     else if (isdigit((unsigned char)nextChar))
       charClass = DIGIT;
+    else if (nextChar == '"')
+      charClass = QUOTE;
     else
       charClass = UNKNOWN;
   }
@@ -127,6 +165,35 @@ void getChar() {
 void getNonBlank() {
   while  (isspace(nextChar))
     getChar();
+}
+
+int keywordLookup() {
+    if (strcmp(lexeme, "PRINT") == 0 || strcmp(lexeme, "PR") == 0)
+        return PRINT;
+    else if (strcmp(lexeme, "INPUT") == 0)
+        return INPUT;
+    else if (strcmp(lexeme, "IF") == 0)
+        return IF;
+    else if (strcmp(lexeme, "THEN") == 0)
+        return THEN;
+    else if (strcmp(lexeme, "GOTO") == 0)
+        return GOTO;
+    else if (strcmp(lexeme, "GOSUB") == 0)
+        return GOSUB;
+    else if (strcmp(lexeme, "LET") == 0)
+        return LET;
+    else if (strcmp(lexeme, "RETURN") == 0)
+        return RETURN;
+    else if (strcmp(lexeme, "CLEAR") == 0)
+        return CLEAR;
+    else if (strcmp(lexeme, "LIST") == 0)
+        return LIST;
+    else if (strcmp(lexeme, "RUN") == 0)
+        return RUN;
+    else if (strcmp(lexeme, "END") == 0)
+        return END;
+    else
+        return IDENT;
 }
 
 /*****************************************************/
@@ -144,7 +211,7 @@ int  lex() {
         addChar();
         getChar();
       }
-    nextToken = IDENT;
+    nextToken = keywordLookup();
     break;
 
 /* Parse integer literals */
@@ -155,8 +222,31 @@ int  lex() {
        addChar();
        getChar();
    }
+   if (nextChar == '.') {
+      addChar();
+      getChar();
+      while (charClass == DIGIT) {
+          addChar();
+          getChar();
+      }
+      nextToken = FLOAT_LIT;
+      break;
+   }
    nextToken = INT_LIT;
    break;
+
+   /* Parse string literals */
+    case QUOTE:
+      addChar();
+      getChar();
+      while (charClass != QUOTE) {
+        addChar();
+        getChar();
+      }
+      addChar(); //add closing quote
+      getChar();
+      nextToken = STRING_LIT;
+      break;
 
 /* Parentheses and operators */
     case  UNKNOWN:
