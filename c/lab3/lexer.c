@@ -28,8 +28,8 @@ int  lex();
 #define UNKNOWN 99
 
 /* Token codes */
-#define STRING_LIT 8
-#define INT_LIT 10
+#define STRING 8
+#define NUMBER 10
 #define FLOAT_LIT 9
 #define IDENT 11
 #define COMMA 12
@@ -56,17 +56,7 @@ int  lex();
 #define END 41
 /******************************************************/
 /* main driver */
-int main() {
-   /* Open the input data file and process its contents */
-   if  ((in_fp = fopen("front.in", "r")) == NULL)
-     printf("ERROR - cannot open front.in \n");
-   else  {
-     getChar();
-     do   {
-       lex(); //lex calls getnonblank which calls getchar
-    }  while (nextToken != EOF);
-  }
-}
+
 
 /*****************************************************/
 /* lookup - a function to lookup operators and parentheses
@@ -238,7 +228,7 @@ int  lex() {
       nextToken = FLOAT_LIT;
       break;
    }
-   nextToken = INT_LIT;
+   nextToken = NUMBER;
    break;
 
    /* Parse string literals */
@@ -251,7 +241,7 @@ int  lex() {
       }
       addChar(); //add closing quote
       getChar();
-      nextToken = STRING_LIT;
+      nextToken = STRING;
       break;
 
 /* Parentheses and operators */

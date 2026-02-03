@@ -1,4 +1,5 @@
-(sum + 47.3 + 4) / total "hel%%##^^$%@"
-PRINT "hello erm"
-END
-$
+10 PRINT "Hellooo"
+20 LET B = 3
+30 LET A = 4
+40 PRINT B + A
+50 PRINT A, B
