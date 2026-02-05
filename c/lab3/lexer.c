@@ -54,6 +54,7 @@ int  lex();
 #define LIST 39
 #define RUN 40
 #define END 41
+#define CR 98
 /******************************************************/
 /* main driver */
 
@@ -112,6 +113,11 @@ int  lookup(char  ch) {
     case  ',':
       addChar();
       nextToken = COMMA;
+      break;
+
+    case '\n':
+      addChar();
+      nextToken = CR;
       break;
 
     default:
