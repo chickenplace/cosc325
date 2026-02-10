@@ -34,7 +34,6 @@ int main()
 
 // lex() MUST be called before this function
 void line() {
-    printf("in Line\n");
     if (nextToken == NUMBER) {
         lineno = atoi(lexeme);
         // take whatever is left in the rest of the line and store it for processing later!
@@ -54,7 +53,6 @@ void line() {
 
 // lex() MUST have already been called before here
 void statement() {
-    printf("in statement\n");
     switch(nextToken) {
         case PRINT:
             lex();
@@ -140,7 +138,6 @@ void statement() {
 // makes an extra call to lex() to look for the comma
 // lex has ALREADY been called before expr_list
 void expr_list() {
-    printf("in expr_list\n");
     if (nextToken == STRING) {
         // do nothing for this assignment
         // but in the next assignment you will need to print something!
@@ -166,7 +163,6 @@ void expr_list() {
 }
 
 void expression() {
-    printf("in expression, nextToken is: %d\n", nextToken);
     lex(); // you gotta do more than this!
     if(nextToken == ADD_OP || nextToken == SUB_OP) {
         lex();
@@ -193,7 +189,6 @@ void relop() {
 }
 
 void term() {
-    printf("in term, nextToken is: %d\n", nextToken);
     lex();
     if (nextToken == IDENT || nextToken == NUMBER) {
         factor();
@@ -210,7 +205,6 @@ void term() {
 }
 
 void factor() {
-    printf("in factor, nextToken is: %d\n", nextToken);
     if (nextToken == IDENT || nextToken == NUMBER) {
         // do nothing for this assignment
         // but in the next assignment you will need to print something!
