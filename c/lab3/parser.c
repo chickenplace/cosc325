@@ -141,19 +141,20 @@ void expr_list() {
     if (nextToken == STRING) {
         // do nothing for this assignment
         // but in the next assignment you will need to print something!
+        lex(); //extra call to look for comma or carriage return
     } else {
         expression();
     }
-    lex(); // extra call to look for the comma
     while (nextToken == COMMA) {
+        lex(); // extra call to look for the comma
         // next assignment: printf("\t");
         if (nextToken == STRING) {
             // do nothing for this assignment
             // but in the next assignment you will need to print something
+            lex(); //extra call to look for comma or carriage return
         } else {
             expression();
         }
-        lex(); // extra call to look for the comma
         // there are only two valid tokens AT THIS SPOT
         if (nextToken != COMMA && nextToken != CR) {
             printf("Expecting COMMA or CR but found: %d\n", nextToken);
@@ -161,9 +162,8 @@ void expr_list() {
         }
     }
 }
-
+// lex() MUST have already been called before here
 void expression() {
-    lex(); // you gotta do more than this!
     if(nextToken == ADD_OP || nextToken == SUB_OP) {
         lex();
     }
@@ -178,18 +178,33 @@ void var_list() {
     if (nextToken == IDENT) {
         // do nothing for this assignment
         // but in the next assignment you will need to print something!
+        lex();
     } else {
         printf("Expecting IDENT but found: %d\n", nextToken);
         exit(1);
+    }
+    while(nextToken == COMMA) {
+        lex();
+        if (nextToken == IDENT) {
+            // do nothing for this assignment
+            // but in the next assignment you will need to print something!
+            lex();
+        } else {
+            printf("Expecting IDENT but found: %d\n", nextToken);
+            exit(1);
+        }
+        if(nextToken != COMMA && nextToken != CR) {
+            printf("Expecting COMMA or CR but found: %d\n", nextToken);
+            exit(1);
+        }
     }
 }
 
 void relop() {
 
 }
-
+// lex() MUST have already been called before here
 void term() {
-    lex();
     if (nextToken == IDENT || nextToken == NUMBER) {
         factor();
         lex();
@@ -203,7 +218,7 @@ void term() {
         exit(1);
     }
 }
-
+// lex() MUST have already been called before here
 void factor() {
     if (nextToken == IDENT || nextToken == NUMBER) {
         // do nothing for this assignment
