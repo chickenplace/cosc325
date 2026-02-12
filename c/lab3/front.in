@@ -1,3 +1,2 @@
-PRINT "hhf"
-
-PRINT "eff"
+10 LET A = 3 * (5 + 3) * (2 + 4) 
+20 PRINT "Hee"

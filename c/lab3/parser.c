@@ -79,7 +79,6 @@ void statement() {
             lex();
             expression();
             // extra call to lex to look for the carriage return
-            lex();
             break;
 
         // keep going with more cases INPUT DOES NOT NEED THE EXTRA CALL TO LEX ... NEITHER DO THE ONES THAT ARE JUST KEYWORDS
@@ -109,7 +108,6 @@ void statement() {
             expression();
 
             // extra call to lex to look for the carriage return
-            lex();
             break;
             
         case RETURN:
@@ -166,6 +164,7 @@ void expr_list() {
 void expression() {
     if(nextToken == ADD_OP || nextToken == SUB_OP) {
         lex();
+        //next assignment: if next token is sub op, negate the statement
     }
     term();
     while (nextToken == ADD_OP || nextToken == SUB_OP) {
@@ -205,17 +204,12 @@ void relop() {
 }
 // lex() MUST have already been called before here
 void term() {
-    if (nextToken == IDENT || nextToken == NUMBER) {
+    factor();
+    lex();
+    while (nextToken == MULT_OP || nextToken == DIV_OP) {
+        lex();
         factor();
         lex();
-        while(nextToken == MULT_OP || nextToken == DIV_OP) {
-            lex();
-            factor();
-            lex();
-        }
-    } else {
-        printf("Expecting IDENT or NUMBER but found: %d\n", nextToken);
-        exit(1);
     }
 }
 // lex() MUST have already been called before here
@@ -230,7 +224,6 @@ void factor() {
             printf("Expecting RIGHT_PAREN but found: %d\n", nextToken);
             exit(1);
         }
-        lex();
     } else {
         printf("Expecting IDENT, NUMBER, or LEFT_PAREN but found: %d\n", nextToken);
         exit(1);

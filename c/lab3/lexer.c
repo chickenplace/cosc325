@@ -54,7 +54,7 @@ int  lex();
 #define LIST 39
 #define RUN 40
 #define END 41
-#define CR 98
+#define CR 99
 /******************************************************/
 /* main driver */
 
