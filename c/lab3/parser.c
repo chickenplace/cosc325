@@ -62,13 +62,11 @@ void statement() {
         case IF:
             lex();
             expression(); 
-            lex();
             relop();
-            lex();
+            //lex();
             expression();
-            lex();
             if (nextToken != THEN) {
-                printf("error! expecting then found something else");
+                printf("error! expecting then found something else\n");
             }
             lex();
             statement();
@@ -200,7 +198,24 @@ void var_list() {
 }
 
 void relop() {
-
+    if(nextToken == LT_OP){
+        lex();
+        if(nextToken == EQUALS_OP){
+            printf("LTE op found\n");
+            lex();
+        }
+    }
+    else if(nextToken == GT_OP){
+        lex();
+        if(nextToken == EQUALS_OP){
+            printf("GTE op found\n");
+            lex();
+        }
+    }
+    else {
+        printf("Expecting a relop (>, <, >=, <=) but found %d instead\n", nextToken);
+        exit(1);
+    }
 }
 // lex() MUST have already been called before here
 void term() {

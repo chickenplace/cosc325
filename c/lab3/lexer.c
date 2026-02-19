@@ -54,6 +54,8 @@ int  lex();
 #define LIST 39
 #define RUN 40
 #define END 41
+#define LTE_OP 42
+#define GTE_OP 43
 #define CR 99
 /******************************************************/
 /* main driver */
@@ -165,7 +167,7 @@ void getChar() {
 /* getNonBlank - a function to call getChar until it
                  returns a non-whitespace character */
 void getNonBlank() {
-  while  (isspace(nextChar))
+  while  (isspace(nextChar)&&nextChar!='\n') 
     getChar();
 }
 
