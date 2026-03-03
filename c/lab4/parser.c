@@ -4,8 +4,6 @@
 int lineno = 0;   // if this is equal to 0 then we should execute immediately
 char* lines[10];  // preallocate enough room for 10 lines
 int linenos[10];  
-int symboltable[26]; // preallocate enough room for 26 variables (A-Z)
-char symboldefined[26]; // 0 if the variable is not defined, 1 if it is defined
 
 void line();
 void statement();
@@ -213,9 +211,6 @@ void relop() {
             printf("GTE op found\n");
             lex();
         }
-    }
-    else if(nextToken == EQUALS_OP){
-        lex();
     }
     else {
         printf("Expecting a relop (>, <, >=, <=) but found %d instead\n", nextToken);
