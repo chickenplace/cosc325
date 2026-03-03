@@ -10,6 +10,7 @@
 /* Variables */
 int  charClass;
 char  lexeme [100];
+char rest_of_line[1000];
 char  nextChar;
 int  lexLen;
 int  token;
@@ -200,6 +201,24 @@ int keywordLookup() {
         return IDENT;
 }
 
+void lex_endl() {
+    int i;
+    // read all the characters into a string but not the newline character
+    getChar(); // side effect of setting nextChar and charClass and advancing the filepointer
+    for (i = 0; nextChar != '\n' && nextChar != EOF; i++) {
+        rest_of_line[i] = nextChar;
+        getChar();
+    }
+    rest_of_line[i] = 0; //string termination character
+
+
+    lexLen = 1;
+    strcpy(lexeme, "\n");
+    nextToken = CR;
+
+
+}
+
 /*****************************************************/
 /* lex - a simple lexical analyzer for arithmetic 
          expressions */
@@ -267,8 +286,7 @@ int  lex() {
       lexeme[3] = 0;
       break;
  } /* End of switch */
- printf("Next token is: %d, Next lexeme is %s\n", 
-         nextToken, lexeme);
+ //printf("Next token is: %d, Next lexeme is %s\n", nextToken, lexeme);
   return  nextToken;
 } /* End of function lex */
 

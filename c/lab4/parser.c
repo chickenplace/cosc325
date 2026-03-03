@@ -1,9 +1,19 @@
 #include "lexer.c"
 
+// create data structure
+typedef struct {
+    int lineno;
+    char* line;
+} Line;
+Line storedProgram[10]; // preallocate enough room for 10 lines
+
 // data structures needed for the interpreter
 int lineno = 0;   // if this is equal to 0 then we should execute immediately
-char* lines[10];  // preallocate enough room for 10 lines
-int linenos[10];  
+char* lines[1000];  // preallocate enough room for 10 lines
+int linenos[1000];  
+int lineindex = 0; //keeps track of how many lines wee have and where the next line should be stored in the lines data structure
+int symboltable[26]; // preallocate enough room for 26 variables (A-Z)
+char symboldefined[26]; // 0 if the variable is not defined, 1 if it is defined
 
 void line();
 void statement();
@@ -36,15 +46,23 @@ int main()
 void line() {
     if (nextToken == NUMBER) {
         lineno = atoi(lexeme);
+        linenos[lineindex] = lineno;
         // take whatever is left in the rest of the line and store it for processing later!
 
         // consume the token by looking at the line number
         // and storing the statement that follows in the right place in our stored program
         // BUT NOT FOR THIS ASSIGNMENT
-        // Call lex() to get the next token
-        lex();
+        // Call special function lex_endl() to get the rest of the line
+        lex_endl(); //sets global variable named rest_of_line that we must store in the right place in lines data structure
+        //allocate memory for the new line we read via lex_endl()
+        // copy line we read into the new memory location
+        lines[lineindex] = malloc(1000);
+        strcpy(lines[lineindex], rest_of_line);
+        lineindex++;
+        printf("Stored this line: %s at line number %d, which is index %d\n", rest_of_line, lineno, lineindex);
+    } else {
+        statement(); // note that statement MUST have an extra call to lex()
     }
-    statement(); // note that statement MUST have an extra call to lex()
     if (nextToken != CR && nextToken != EOF) {
         printf("Expecting CR, but found: %d instead!\n", nextToken);
     } 
@@ -113,10 +131,14 @@ void statement() {
             break;
 
         case CLEAR:
+            lineindex = 0; // just reset the lineindex to 0 to "clear" the program
             lex();
             break;
 
         case LIST:
+            for(int i = 0; i < lineindex; i++) {
+                printf("%d: %s\n", linenos[i], lines[i]);
+            }
             lex();
             break;
 
@@ -211,6 +233,9 @@ void relop() {
             printf("GTE op found\n");
             lex();
         }
+    }
+    else if(nextToken == EQUALS_OP){
+        lex();
     }
     else {
         printf("Expecting a relop (>, <, >=, <=) but found %d instead\n", nextToken);
