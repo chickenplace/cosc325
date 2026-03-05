@@ -330,7 +330,7 @@ int factor() {
         // but in the next assignment you will need to print something!
         int pos = lexeme[0] - 'A';
         if(symboldefined[pos] == 0) {
-            printf("HOW> Undefined symbol %c\n", lexeme[0]);
+            printf("HOW? Undefined symbol %c\n", lexeme[0]);
             exit(1);
         }
         return symboltable[pos];
