@@ -16,6 +16,8 @@ int  lexLen;
 int  token;
 int  nextToken;
 FILE *in_fp;
+char* in_str; // "statement" we are currently processing as a string
+int stri = -1; //position within string; -1 means 
 /* Function declarations */
 void  addChar();
 void  getChar();
@@ -147,8 +149,8 @@ void  addChar() {
 /* getChar - a function to get the next character of 
              input and determine its character class */
 void getChar() {
-  int c = getc(in_fp);
-  if (c == EOF) {
+  int c = stri < 0 ? getc(in_fp) : in_str[stri++];
+  if (c == EOF || stri > 0 &&stri==strlen(in_str)) {
     charClass = EOF;
     nextChar = 0;
   } else {

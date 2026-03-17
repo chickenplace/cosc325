@@ -12,6 +12,8 @@ int lineno = 0;   // if this is equal to 0 then we should execute immediately
 char* lines[1000];  // preallocate enough room for 10 lines
 int linenos[1000];  
 int lineindex = 0; //keeps track of how many lines wee have and where the next line should be stored in the lines data structure
+int linei = 0; //keeps track of which line index we are on while running a program
+int reti = 0; //keeps track of index we should return to afrer a gosub
 
 //Dirty symbol table 
 int symboltable[26]; // preallocate enough room for 26 variables (A-Z) (position 0 = A, position 1 = B, etc.)
@@ -60,6 +62,15 @@ int search(int lineno) {
         }
     }
     return -1;
+}
+
+int findLine(int lineno) {
+    int hit = search(lineno);
+    if(hit < 0) {
+        printf("Could not find line number target %d\n", lineno);
+        exit(1);
+    }
+    return hit;
 }
 
 /******************************************************/
@@ -123,6 +134,7 @@ void line() {
 
 // lex() MUST have already been called before here
 void statement() {
+    int targetlineno; // Only used for GOTO and GOSUB statements
     switch(nextToken) {
         case PRINT:
             lex();
@@ -143,9 +155,12 @@ void statement() {
             // we never need an extra call to lex() here 
             // because statement() ALWAYS has an extra call to lex()
             break;
+
         case GOTO:
             lex();
-            expression();
+            targetlineno = expression();
+            //find linei we are supposed to jump to
+            linei = findLine(targetlineno) - 1; // from a recursive call in the middle of a for loop that executes linei++, must set to target index - 1
             // extra call to lex to look for the carriage return
             break;
 
@@ -175,12 +190,15 @@ void statement() {
         
         case GOSUB:
             lex();
-            expression();
-
+            targetlineno = expression();
+            // find linei we are supposed to jump to
+            reti = linei; // store the current linei in reti so we know where to return to after the subroutine is done
+            linei = findLine(targetlineno) - 1; // from a recursive call in the middle of a for loop that executes linei++, must set to target index - 1
             // extra call to lex to look for the carriage return
             break;
             
         case RETURN:
+            linei = reti;
             lex();
             break;
 
@@ -201,10 +219,21 @@ void statement() {
             sort(); 
             //TODO: update lexer to take in a string 
             //instead of always reading from file
+            for(linei=0; linei<lineindex; linei++) {
+                //GOTO and GOSUB alter linei
+                in_str = lines[linei];
+                stri = 0;
+                getChar();
+                lex();
+                line();
+            }
             lex();
             break;
 
         case END:
+            //force loop to stop by setting linei = to lineindex
+            linei = lineindex;
+            stri = -1; // this puts us back into "file reading" mode
             lex(); // this IS the extra call to lex() since nothing comes after these keywords
                   //. you probably need another call to lex() right here!!!!
             break;
