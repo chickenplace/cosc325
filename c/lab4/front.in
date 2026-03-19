@@ -1,4 +1,4 @@
-10 REM fjen : 
+10 REM B: 20
 20 PRINT "HEllo"
 30 LET A = 5
 40 LET B = 4
