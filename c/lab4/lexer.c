@@ -36,6 +36,7 @@ int  lex();
 #define FLOAT_LIT 9
 #define IDENT 11
 #define COMMA 12
+#define COLON 13
 #define LT_OP 18
 #define GT_OP 19
 #define EQUALS_OP 20
@@ -59,6 +60,7 @@ int  lex();
 #define END 41
 #define LTE_OP 42
 #define GTE_OP 43
+#define REM 50
 #define CR 99
 /******************************************************/
 /* main driver */
@@ -125,6 +127,11 @@ int  lookup(char  ch) {
       nextToken = CR;
       break;
 
+    case ':':
+      addChar();
+      nextToken = COLON;
+      break;
+
     default:
       addChar();
       //nextToken = EOF;
@@ -149,8 +156,13 @@ void  addChar() {
 /* getChar - a function to get the next character of 
              input and determine its character class */
 void getChar() {
+  if(stri >= 0 && stri >=strlen(in_str)) {
+    charClass = CR;
+    nextChar = '\n';
+    return;
+  }
   int c = stri < 0 ? getc(in_fp) : in_str[stri++];
-  if (c == EOF || stri > 0 &&stri==strlen(in_str)) {
+  if (c == EOF) {
     charClass = EOF;
     nextChar = 0;
   } else {
@@ -199,6 +211,8 @@ int keywordLookup() {
         return RUN;
     else if (strcmp(lexeme, "END") == 0)
         return END;
+    else if (strcmp(lexeme, "REM") == 0)
+        return REM;
     else
         return IDENT;
 }

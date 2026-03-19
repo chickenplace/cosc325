@@ -24,7 +24,7 @@ void statement();
 void expr_list();
 void var_list();
 int expression();
-void relop();
+int relop();
 int term();
 int factor();
 
@@ -71,6 +71,15 @@ int findLine(int lineno) {
         exit(1);
     }
     return hit;
+}
+
+void killIf() {
+    //foce the lexer to read to the end of the line
+    //this is when an if statement is false so that it finishes parsing
+    while(nextChar != '\n' && nextToken != 0) {
+        getChar();
+    }
+    nextToken = CR; // set next token to CR so that the rest of the line is ignored and we can move on to the next line
 }
 
 /******************************************************/
@@ -135,6 +144,9 @@ void line() {
 // lex() MUST have already been called before here
 void statement() {
     int targetlineno; // Only used for GOTO and GOSUB statements
+    int if_a;
+    int if_b;
+    int op;
     switch(nextToken) {
         case PRINT:
             lex();
@@ -143,15 +155,63 @@ void statement() {
             break;
         case IF:
             lex();
-            expression(); 
-            relop();
+            if_a = expression(); 
+            op = relop();
             //lex();
-            expression();
+            if_b = expression();
             if (nextToken != THEN) {
                 printf("error! expecting then found something else\n");
             }
             lex();
-            statement();
+            switch (op) {
+                case 0:
+                    if (if_a < if_b) {
+                        statement();
+                    } else {
+                        killIf();
+                    }
+                    break;
+
+                case 1:
+                    if (if_a > if_b) {
+                        statement();
+                    } else {
+                        killIf();
+                    }
+                    break;
+
+                case 2:
+                    if (if_a == if_b) {
+                        statement();
+                    } else {
+                        killIf();
+                    }
+                    break;
+
+                case 3:
+                    if (if_a <= if_b) {
+                        statement();
+                    } else {
+                        killIf();
+                    }
+                    break;
+
+                case 4:
+                    if (if_a >= if_b) {
+                        statement();
+                    } else {
+                        killIf();
+                    }
+                    break;
+
+                case 5:
+                    if (if_a != if_b) {
+                        statement();
+                    } else {
+                        killIf();
+                    }
+                    break;
+            }
             // we never need an extra call to lex() here 
             // because statement() ALWAYS has an extra call to lex()
             break;
@@ -223,11 +283,18 @@ void statement() {
                 //GOTO and GOSUB alter linei
                 in_str = lines[linei];
                 stri = 0;
+                printf("Executing: %d %s\n", linenos[linei], in_str);
                 getChar();
                 lex();
                 line();
             }
             lex();
+            break;
+
+        case REM:
+            // ignore the line
+            lex();
+            killIf(); // just read to the end of the line and do nothing
             break;
 
         case END:
@@ -246,10 +313,11 @@ void expr_list() {
     if (nextToken == STRING) {
         // do nothing for this assignment
         // but in the next assignment you will need to print something!
-        lex(); //extra call to look for comma or carriage return
         printf("%s", lexeme);
+        lex(); //extra call to look for comma or carriage return
+        
     } else {
-        printf("%d\t", expression());
+        printf("%d\n", expression());
     }
     while (nextToken == COMMA) {
         lex(); // extra call to look for the comma
@@ -260,7 +328,7 @@ void expr_list() {
             lex(); //extra call to look for comma or carriage return
             printf("%s", lexeme);
         } else {
-            printf("%d\t", expression());
+            printf("%d\n", expression());
         }
         // there are only two valid tokens AT THIS SPOT
         if (nextToken != COMMA && nextToken != CR) {
@@ -289,9 +357,11 @@ int expression() {
 }
 
 void var_list() {
+    int varpos[26];
+    int varcnt = 0;
     if (nextToken == IDENT) {
-        // do nothing for this assignment
-        // but in the next assignment you will need to print something!
+        // grab position before calling lex() again
+        varpos[varcnt++] = lexeme[0] - 'A'; //Switch to nextChar if not working
         lex();
     } else {
         printf("Expecting IDENT but found: %d\n", nextToken);
@@ -300,8 +370,8 @@ void var_list() {
     while(nextToken == COMMA) {
         lex();
         if (nextToken == IDENT) {
-            // do nothing for this assignment
-            // but in the next assignment you will need to print something!
+            // grab position before calling lex() again
+            varpos[varcnt++] = lexeme[0] - 'A'; //Switch to nextChar if not working
             lex();
         } else {
             printf("Expecting IDENT but found: %d\n", nextToken);
@@ -312,25 +382,45 @@ void var_list() {
             exit(1);
         }
     }
+    // now we need to use scanf to read from the console and convert whatever they type into a number
+    // and then store that number in the symbol table varpos[] found during parsing
+    for (int i = 0; i < varcnt; i++) {
+        scanf("%d", &symboltable[varpos[i]]);
+        symboldefined[varpos[i]] = 1; // mark this variable as defined in the symbol table
+    }
 }
 
-void relop() {
+//0: <, 1; >, 2: =, 3: <=, 4: >=, 5: <> or ><
+int relop() {
     if(nextToken == LT_OP){
         lex();
-        if(nextToken == EQUALS_OP){
-            printf("LTE op found\n");
+        if(nextToken == EQUALS_OP || nextToken == GT_OP) {
             lex();
+            if(nextToken == GT_OP) {
+                return 5; // <>
+            } else {
+                return 3; // <=
+            }
+        } else {
+            return 0;
         }
     }
     else if(nextToken == GT_OP){
         lex();
-        if(nextToken == EQUALS_OP){
-            printf("GTE op found\n");
+        if(nextToken == EQUALS_OP || nextToken == LT_OP) {
             lex();
+            if(nextToken == LT_OP) {
+                return 5; // ><
+            } else {
+                return 4; // >=
+            }
+        } else {
+            return 1;
         }
     }
     else if(nextToken == EQUALS_OP){
         lex();
+        return 2;
     }
     else {
         printf("Expecting a relop (>, <, >=, <=) but found %d instead\n", nextToken);
@@ -342,10 +432,11 @@ int term() {
     int result = factor();
     lex();
     while (nextToken == MULT_OP || nextToken == DIV_OP) {
-        lex();
         if (nextToken == MULT_OP) {
+            lex();
             result *= factor();
         } else {
+            lex();
             result /= factor();
         }
         lex();
