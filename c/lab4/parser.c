@@ -126,11 +126,11 @@ void line() {
         if (previndex < 0) {
             lines[lineindex] = malloc(1000);
             strcpy(lines[lineindex], rest_of_line);
-            printf("Stored this line: %s at line number %d, which is index %d\n", rest_of_line, lineno, lineindex);
+            //printf("Stored this line: %s at line number %d, which is index %d\n", rest_of_line, lineno, lineindex);
             lineindex++;
         } else {
             strcpy(lines[previndex], rest_of_line);
-            printf("Overwrote old line with this line: %s at line number %d, which is index %d\n", rest_of_line, lineno, previndex);
+            //printf("Overwrote old line with this line: %s at line number %d, which is index %d\n", rest_of_line, lineno, previndex);
         }
     } else {
         statement(); // note that statement MUST have an extra call to lex()
@@ -283,7 +283,7 @@ void statement() {
                 //GOTO and GOSUB alter linei
                 in_str = lines[linei];
                 stri = 0;
-                printf("Executing: %d %s\n", linenos[linei], in_str);
+                //printf("Executing: %d %s\n", linenos[linei], in_str);
                 getChar();
                 lex();
                 line();
