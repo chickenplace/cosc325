@@ -7,12 +7,14 @@
 40 IF B < C THEN LET A = B*C
 50 PR "Hello Dr. Toone"
 60 GOTO 100
+65 PR "Printing A, B, C, and D"
 70 PR A, B, C, D
+71 PR "Printing A*B*C*D"
 75 PR A*B*C*D
 80 END
 100 LET D = 0
 110 GOSUB 1000
-120 GOTO 70
+120 GOTO 65
 1000 LET D = D + A
 1001 RETURN
 RUN
